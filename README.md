@@ -11,6 +11,31 @@ made under MIT License, comptime_allocator is licensed under the
 [European Union Public License 1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
 or later.
 
+## Example
+
+Directly from the tests:
+```zig
+const allocator = @import("comptime_allocator");
+
+test "comptime ArrayList" {
+    const hello_world = comptime blk: {
+        var array_list = std.ArrayList(u8).init(allocator);
+
+        try array_list.appendSlice("Helloo");
+        try array_list.appendSlice("wworld!");
+
+        try array_list.replaceRange(5, 2, ", ");
+
+        // You cannot use a pointer allocated at compile time during runtime,
+        // but you can copy its content to a static array
+        var out_buf: [array_list.items.len]u8 = undefined;
+        @memcpy(&out_buf, array_list.items);
+        break :blk out_buf;
+    };
+    try std.testing.expectEqualSlices(u8, "Hello, world!", &hello_world);
+}
+```
+
 ## FAQ
 
 ### Why use that allocator?
