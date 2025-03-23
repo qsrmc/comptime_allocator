@@ -13,6 +13,7 @@ jobs:
         build_type: [Debug, ReleaseSafe, ReleaseFast]
       fail-fast: false
     runs-on: blacksmith
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: goto-bus-stop/setup-zig@v2
@@ -22,6 +23,7 @@ jobs:
 
   lint:
     runs-on: blacksmith
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: goto-bus-stop/setup-zig@v2
