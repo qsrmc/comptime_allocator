@@ -1,0 +1,30 @@
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        build_type: [Debug, ReleaseSafe, ReleaseFast]
+      fail-fast: false
+    runs-on: blacksmith
+    steps:
+      - uses: actions/checkout@v4
+      - uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.14.0
+      - run: zig build -Doptimize=${{matrix.build_type}} test -Dllvm=true --summary all
+
+  lint:
+    runs-on: blacksmith
+    steps:
+      - uses: actions/checkout@v4
+      - uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.14.0
+      - run: zig fmt --check .
